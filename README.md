@@ -1,6 +1,25 @@
-扫码加微信（微信ID：**a_java_boy3**），备注微人事，进群讨论。
+项目主要登录流程记录：
 
-![微信ID：a_java_boy3](http://img.itboyhub.com/2020/ajavaboy3-a.jpeg)
+1，SecurityConfig中自定义过滤器bean（专为登录准备）
+![image](https://user-images.githubusercontent.com/24286164/157808990-6a64cab4-cc0b-434d-9a35-4c75c697cb24.png)
+2，在configure方法中注入以上自定义过滤器
+![image](https://user-images.githubusercontent.com/24286164/157809083-03e47d84-f6ed-4f3b-b77a-2ceaf0caf00c.png)
+这样项目初始化的时候就会自动注入我们的过滤器，并且拦截后续的/dologin请求（在第一步中配置的）
+![image](https://user-images.githubusercontent.com/24286164/157809258-506e4302-d36f-4d00-92b2-66f713ad9c6a.png)
+3，调用/dologin会被LoginFilter拦截，我们在里面做session保存（为了限制同一用户多地登录，例如下面限制只允许一地登录，在别的地方登录会挤掉当前用户）
+![image](https://user-images.githubusercontent.com/24286164/157809827-d429af39-1ec4-4932-bc94-577d24854920.png)
+![image](https://user-images.githubusercontent.com/24286164/157809551-f5a65ea2-a64f-40dc-b601-48e30c57ecb0.png)
+4，若是做登录失败账户锁定，可以定义登陆异常捕获，捕获后做锁定处理
+![image](https://user-images.githubusercontent.com/24286164/157810707-30730799-7d6e-45b0-9aca-26a4fd923afb.png)
+5，权限校验，定义两个实现类CustomFilterInvocationSecurityMetadataSource，CustomUrlDecisionManager，将两个类纳入Security管理
+当用户请求接口时，会先被CustomFilterInvocationSecurityMetadataSource拦截，处理该请求所需要的角色权限，并封装成Collection<ConfigAttribute>
+    接着会被CustomUrlDecisionManager拦截，Collection<ConfigAttribute>作为参数传入，通过Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();获取
+    当前用户信息（角色），Collection<ConfigAttribute>是否包含用户角色，包含则放行，否则报权限不足。
+![image](https://user-images.githubusercontent.com/24286164/157811802-1245e5f6-ae5f-42ae-803b-ead993001911.png)
+
+![image](https://user-images.githubusercontent.com/24286164/157811748-16dcaba8-8450-46ba-b020-6ee5d1b3b7b2.png)
+
+
 
 ## 项目介绍
 
