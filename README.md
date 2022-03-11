@@ -7,6 +7,7 @@
 这样项目初始化的时候就会自动注入我们的过滤器，并且拦截后续的/dologin请求（在第一步中配置的）
 ![image](https://user-images.githubusercontent.com/24286164/157809258-506e4302-d36f-4d00-92b2-66f713ad9c6a.png)
 3，调用/dologin会被LoginFilter拦截，我们在里面做session保存（为了限制同一用户多地登录，例如下面限制只允许一地登录，在别的地方登录会挤掉当前用户）
+this.getAuthenticationManager().authenticate(authRequest)会调用UserDetailsService中loadUserByUsername去查找用户信息（HrService实现了该方法）和当前用户做对比
 ![image](https://user-images.githubusercontent.com/24286164/157809827-d429af39-1ec4-4932-bc94-577d24854920.png)
 ![image](https://user-images.githubusercontent.com/24286164/157809551-f5a65ea2-a64f-40dc-b601-48e30c57ecb0.png)
 4，若是做登录失败账户锁定，可以定义登陆异常捕获，捕获后做锁定处理
